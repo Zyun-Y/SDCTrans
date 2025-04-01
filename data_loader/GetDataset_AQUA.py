@@ -66,7 +66,8 @@ def _resize_image(image, target):
 
 
 label_ls = ['reflex_overall',  'corneal scar',  'corneal thinning','pupil','stromal infiltrate','surrounding inflammation','hypopyon']
-
+# For ScS: label_ls = ['reflex_overall',  'corneal scar',  'pupil','stromal infiltrate']
+# For Blue: label_ls = ['reflex_overall',  'fluoro tear film',  'epithelial defect','pupil']
 class MyDataset(data.Dataset):# 
     def __init__(self, args, train_list, mode,root):  
         self.args = args

@@ -65,11 +65,9 @@ def _resize_image(image, target):
    return cv2.resize(image, dsize=(target[0], target[1]), interpolation=cv2.INTER_LINEAR)
 
 
-label_ls = ['reflex_overall',  'corneal scar',  'corneal thinning','pupil','stromal infiltrate','surrounding inflammation','hypopyon']
-# For ScS: label_ls = ['reflex_overall',  'corneal scar',  'pupil','stromal infiltrate']
-# For Blue: label_ls = ['reflex_overall',  'fluoro tear film',  'epithelial defect','pupil']
+
 class MyDataset(data.Dataset):# 
-    def __init__(self, args, train_list, mode,root):  
+    def __init__(self, args, train_list, mode,root, label_ls):  
         self.args = args
         img_ls, mask_ls, name_ls, limbus_ls = [], [],[], []
         for pat in train_list:
@@ -91,7 +89,7 @@ class MyDataset(data.Dataset):#
                     limbus_ls.append(limbus)
         
         self.mode = mode
-
+        self.label_ls = label_ls
         self.limbus_ls = limbus_ls
         self.name_ls = name_ls
         self.img_ls = img_ls
@@ -145,7 +143,7 @@ class MyDataset(data.Dataset):#
 
         # print(self.mask_ls[index]+'/'+str(7)+'.png')
         # mask = cv2.imread(self.mask_ls[index]+'/1.png',0).astype(np.float32) if exists(self.mask_ls[index]+'/1.png') else np.zeros([512,512])
-        mask = [cv2.resize(cv2.imread(self.mask_ls[index]+'/'+label_ls[i]+'.png',0).astype(np.float32)[x_min:x_max,y_min:y_max],dsize=(self.args.resize[1], self.args.resize[0])) if exists(self.mask_ls[index]+'/'+label_ls[i]+'.png') else np.zeros(self.args.resize) for i in range(len(label_ls))]
+        mask = [cv2.resize(cv2.imread(self.mask_ls[index]+'/'+self.label_ls[i]+'.png',0).astype(np.float32)[x_min:x_max,y_min:y_max],dsize=(self.args.resize[1], self.args.resize[0])) if exists(self.mask_ls[index]+'/'+self.label_ls[i]+'.png') else np.zeros(self.args.resize) for i in range(len(self.label_ls))]
         
 
         mask = np.array(mask)
